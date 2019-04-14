@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Trinca.Chrrsc.WebAPI</name>
+    </assembly>
+    <members>
+        <member name="T:Trinca.Chrrsc.WebAPI.Controllers.BarbecueController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Controllers.BarbecueController.Get">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Trinca.Chrrsc.WebAPI.Controllers.FriendController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Controllers.FriendController.Get">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
