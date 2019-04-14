@@ -2,8 +2,12 @@ import React, { useState, useEffect, useReducer } from "react";
 import { Button, Table, Icon, Form, Segment } from "semantic-ui-react";
 import { withRouter } from "react-router-dom";
 import { Steps } from "../common";
+import LocalStorageHelper from "../../helpers/localStorage";
+import MoneyHelper from "../../helpers/money";
 
-function BarbecueForm(props) {
+const { withFun, noFun } = LocalStorageHelper.getSettings();
+
+const BarbecueForm = props => {
   const { match } = props;
   const { params } = match;
 
@@ -52,7 +56,7 @@ function BarbecueForm(props) {
           friends: form.friends
         })
       );
-      //props.history.push("/barbecue/confirm");
+      props.history.push("/barbecue/confirm");
     }
 
     setForm({
@@ -71,6 +75,10 @@ function BarbecueForm(props) {
 
   const hasError = name => {
     return form.errors.filter(x => x === name).length > 0;
+  };
+
+  const cancel = () => {
+    props.history.push("/barbecue");
   };
 
   return (
@@ -96,6 +104,7 @@ function BarbecueForm(props) {
               error={hasError("why")}
             />
             <Form.TextArea
+              rows={2}
               label="Observação"
               name="description"
               onChange={handleChange}
@@ -103,25 +112,29 @@ function BarbecueForm(props) {
             />
           </Form>
           <Segment secondary>
-            <Table>
+            <Table celled>
               <Table.Body>
                 <Table.Row>
                   <Table.Cell colSpan="2">
-                    Valor de contribuição sugerido:
+                    <b>Valor de contribuição sugerido:</b>
                   </Table.Cell>
                 </Table.Row>
                 <Table.Row>
                   <Table.Cell>Com bebida</Table.Cell>
-                  <Table.Cell>R$ 15,00</Table.Cell>
+                  <Table.Cell textAlign="right">
+                    <b>{MoneyHelper.format(withFun)}</b>
+                  </Table.Cell>
                 </Table.Row>
                 <Table.Row>
                   <Table.Cell>Sem bebida</Table.Cell>
-                  <Table.Cell>5,00</Table.Cell>
+                  <Table.Cell textAlign="right">
+                    <b>{MoneyHelper.format(noFun)}</b>
+                  </Table.Cell>
                 </Table.Row>
               </Table.Body>
             </Table>
           </Segment>
-          <Button floated="left" negative>
+          <Button floated="left" negative onClick={() => cancel()}>
             Cancelar
           </Button>
           <Button floated="right" primary onClick={() => next()}>
@@ -132,6 +145,6 @@ function BarbecueForm(props) {
       </Segment>
     </>
   );
-}
+};
 
 export default withRouter(BarbecueForm);

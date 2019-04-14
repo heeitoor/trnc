@@ -7,7 +7,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>C:\Users\heito\Desktop\projects\trnc\api\Trinca.Chrrsc.WebAPI\Trinca.Chrrsc.WebAPI.xml</DocumentationFile>
-    <OutputPath>bin\Debug\netcoreapp2.2\</OutputPath>
+    <OutputPath></OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,13 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Trinca.Chrrsc.Contract\Trinca.Chrrsc.Contract.csproj" />
     <ProjectReference Include="..\Trinca.Chrrsc.Core\Trinca.Chrrsc.Core.csproj" />
-    <ProjectReference Include="..\Trinca.Chrrsc.Data\Trinca.Chrrsc.Data.csproj" />
   </ItemGroup>
 
 </Project>

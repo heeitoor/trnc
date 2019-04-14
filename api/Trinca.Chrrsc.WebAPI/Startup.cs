@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Trinca.Chrrsc.Data;
 using Trinca.Chrrsc.Core;
+using Trinca.Chrrsc.WebAPI.Middleware;
+using System;
 
 namespace Trinca.Chrrsc.WebAPI
 {
@@ -25,10 +27,8 @@ namespace Trinca.Chrrsc.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddEntityFrameworkNpgsql()
-            //    .AddDbContext<ChrrscContext>()
-            //    .BuildServiceProvider();
             services.AddCors();
+
             services.ConfigureData();
 
             services.ConfigureBusiness();
@@ -48,26 +48,30 @@ namespace Trinca.Chrrsc.WebAPI
                     }
                 });
 
-                //var xmlFile = "Trinca.Chrrsc.WebAPI.xml";
-                //var xmlPath = ConfigurationPath.Combine(AppContext.BaseDirectory, xmlFile);
-                //x.IncludeXmlComments(xmlPath);
+                var xmlFile = "Trinca.Chrrsc.WebAPI.xml";
+                var xmlPath = AppContext.BaseDirectory + xmlFile;
+                x.IncludeXmlComments(xmlPath);
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseCors(option => option.AllowAnyOrigin());
 
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseHttpsRedirection();
             app.UseMvc();

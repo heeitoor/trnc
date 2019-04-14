@@ -9,6 +9,12 @@
             
             </summary>
         </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Controllers.BarbecueController.#ctor(Trinca.Chrrsc.Contract.Business.IBarbecueBusiness)">
+            <summary>
+            
+            </summary>
+            <param name="barbecueBusiness"></param>
+        </member>
         <member name="M:Trinca.Chrrsc.WebAPI.Controllers.BarbecueController.Get">
             <summary>
             
@@ -20,7 +26,55 @@
             
             </summary>
         </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Controllers.FriendController.#ctor(Trinca.Chrrsc.Contract.Business.IFriendBusiness)">
+            <summary>
+            
+            </summary>
+            <param name="friendBusiness"></param>
+        </member>
         <member name="M:Trinca.Chrrsc.WebAPI.Controllers.FriendController.Get">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Controllers.FriendController.Post(Trinca.Chrrsc.Contract.Model.FriendModel)">
+            <summary>
+            
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Trinca.Chrrsc.WebAPI.Controllers.PartyController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Controllers.PartyController.#ctor(Trinca.Chrrsc.Contract.Business.IPartyBusiness)">
+            <summary>
+            
+            </summary>
+            <param name="partyBusiness"></param>
+        </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Controllers.PartyController.Post(Trinca.Chrrsc.Contract.Model.PartyModel)">
+            <summary>
+            
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Trinca.Chrrsc.WebAPI.Controllers.SettingsController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Controllers.SettingsController.#ctor(Trinca.Chrrsc.Contract.Business.ISettingsBusiness)">
+            <summary>
+            
+            </summary>
+            <param name="settingsBusiness"></param>
+        </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Controllers.SettingsController.Get">
             <summary>
             
             </summary>

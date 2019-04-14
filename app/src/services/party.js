@@ -1,13 +1,9 @@
 import ServiceBase from "./base";
 
-export default class FriendService extends ServiceBase {
+export default class PartyService extends ServiceBase {
   constructor() {
     super();
-    this.path = "/friend";
-  }
-
-  get() {
-    return super.get(this.path);
+    this.path = "/party";
   }
 
   post(data) {

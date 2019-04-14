@@ -4,8 +4,6 @@ var dotenv = require("dotenv").config({ path: __dirname + "/.env" });
 
 const Dotenv = require("dotenv-webpack");
 
-console.log(new Dotenv());
-
 module.exports = {
   entry: "./src/index.js",
   module: {
@@ -26,11 +24,7 @@ module.exports = {
     filename: "bundle.js"
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    //new Dotenv(),
-    new webpack.DefinePlugin({
-      "process.env.API_URL": JSON.stringify({ a: "teste" })
-    })
+    new webpack.HotModuleReplacementPlugin()
   ],
   devServer: {
     contentBase: "./dist",

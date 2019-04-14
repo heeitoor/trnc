@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   Button,
   Table,
-  TableHeader,
   Icon,
   Form,
   Segment,
@@ -15,10 +14,16 @@ import { withRouter } from "react-router-dom";
 import { Steps } from "../common";
 import { FriendForm } from "../friend";
 import FriendService from "../../services/friend";
+import LocalStorageHelper from "../../helpers/localStorage";
+import MoneyHelper from "../../helpers/money";
+const _ = require("lodash");
+const moment = require("moment");
 
-const placeholderUrl = "https://ui-avatars.com/api/?rounded=true&name=";
+const { placeholderUrl } = require("../../config");
 
-function Confirm() {
+const { withFun, noFun } = LocalStorageHelper.getSettings();
+
+const BarbecueConfirm = props => {
   const service = new FriendService();
 
   let initialState = {
@@ -36,35 +41,71 @@ function Confirm() {
     };
   }
 
-  const [form, setForm] = useState(initialState);
-  const [friendsList, setFriendsList] = useState([]);
-  const [modal, setModal] = useState(false);
-  const [friendName, setFriendName] = useState("");
-  const [selectedFriend, setSelectedFriend] = useState({
+  const initialSelectedFriend = {
     id: undefined,
     name: "",
     value: 0,
     description: "",
     paid: false,
     fun: false
-  });
+  };
+
+  const [form, setForm] = useState(initialState);
+  const [friendsList, setFriendsList] = useState([]);
+  const [modal, setModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [friendName, setFriendName] = useState("");
+  const [selectedFriend, setSelectedFriend] = useState(initialSelectedFriend);
 
   const load = async () => {
-    const data = await service.get();
+    setLoading(true);
+    let data = await service.get();
+
+    data = data.map(item => {
+      let inList = form.friends.find(x => x.id === item.id);
+
+      if (!inList) {
+        inList = {
+          ...inList,
+          ...{ value: 0, description: "", paid: false, fun: false }
+        };
+      }
+
+      return {
+        ...item,
+        ...inList
+      };
+    });
+
+    setLoading(false);
     setFriendsList(data);
   };
 
   useEffect(() => {
     load();
-  }, []);
+  }, [form]);
 
   const toggleModal = () => {
+    if (!modal) {
+      load();
+    }
+
     setModal(!modal);
   };
 
-  const addFriend = () => {
-    setFriendsList([{ id: 9, name: friendName }, ...friendsList]);
+  const addFriend = async () => {
+    setLoading(true);
+    const { data } = await service.post({ name: friendName });
+    setFriendsList([
+      {
+        id: data,
+        name: friendName,
+        ...{ value: 0, description: "", paid: false, fun: false }
+      },
+      ...friendsList
+    ]);
     setFriendName("");
+    setLoading(false);
   };
 
   const onChange = e => {
@@ -72,50 +113,88 @@ function Confirm() {
   };
 
   const selectFriend = args => {
-    console.log({
-      ...args,
-      value: 0,
-      description: "",
-      paid: false,
-      fun: false
-    });
+    setSelectedFriend(args);
+  };
 
-    setSelectedFriend({
-      //...args,
-      id: 12,
-      value: 0,
-      description: "",
-      paid: false,
-      fun: false
-    });
+  const addFriendToParty = async friend => {
+    if (!friend) {
+      setSelectedFriend(initialSelectedFriend);
+      return;
+    }
 
-    console.log(selectedFriend.id === undefined)
+    _.remove(form.friends, x => x.id === friend.id);
+
+    const newForm = {
+      ...form,
+      friends: [
+        {
+          ...friend,
+          checked: true
+        },
+        ...form.friends
+      ]
+    };
+    localStorage.setItem("wip", JSON.stringify(newForm));
+    setForm(newForm);
+    setSelectedFriend(initialSelectedFriend);
+  };
+
+  const next = () => {
+    props.history.push("/barbecue/summary");
+  };
+
+  const previous = () => {
+    props.history.push("/barbecue/form");
   };
 
   return (
     <Segment attached basic>
       <Steps selected={1} />
       <Segment basic>
-        <Table celled size="small">
+        <Table celled size="small" attached="top">
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>
+                <b>Quando?</b>
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                <b>Por quê?</b>
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
           <Table.Body>
             <Table.Row>
-              <Table.Cell colSpan="2">
-                <p>Dia 01/09/2019</p>
+              <Table.Cell>
+                {moment(form.when, "Y-MM-D").format("D/MM/Y")}
+              </Table.Cell>
+              <Table.Cell>{form.why}</Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table>
+        <Table celled size="small" attached="bottom">
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell colSpan="2">Quantos pila?</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell>Com bebida</Table.Cell>
+              <Table.Cell textAlign="right">
+                <b>{`R$ ${parseFloat(withFun)
+                  .toFixed(2)
+                  .replace(".", ",")}`}</b>
               </Table.Cell>
             </Table.Row>
             <Table.Row>
-              <Table.Cell colSpan="2">lorem ipsum</Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell colSpan="2">Quantos pila?</Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>Com bebida</Table.Cell>
-              <Table.Cell>R$ 15,00</Table.Cell>
-            </Table.Row>
-            <Table.Row>
               <Table.Cell>Sem bebida</Table.Cell>
-              <Table.Cell>5,00</Table.Cell>
+              <Table.Cell textAlign="right">
+                <b>
+                  {`R$ ${parseFloat(noFun)
+                    .toFixed(2)
+                    .replace(".", ",")}`}
+                </b>
+              </Table.Cell>
             </Table.Row>
           </Table.Body>
         </Table>
@@ -123,35 +202,68 @@ function Confirm() {
           <Icon name="plus" />
           Adicionar Amigo
         </Button>
-        <Segment secondary>
-          <Table>
-            <Table.Body>
-              <Table.Row>
-                <Table.Cell>Nº de amigos</Table.Cell>
-                <Table.Cell>{form.friends.length}</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Meta da vaquinha</Table.Cell>
-                <Table.Cell>12</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Valor atual da vaquinha</Table.Cell>
-                <Table.Cell>12</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Total de bebuns</Table.Cell>
-                <Table.Cell>12</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Total de saudáveis</Table.Cell>
-                <Table.Cell>12</Table.Cell>
-              </Table.Row>
-            </Table.Body>
-          </Table>
-        </Segment>
-        <Button floated="left">Anterior</Button>
-        <Button floated="right" onClick={() => next()}>
-          Próximo
+        <Table celled>
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell style={{ background: "#f9fafb", fontWeight: "bold" }}>
+                Nº de amigos
+              </Table.Cell>
+              <Table.Cell textAlign="right">{form.friends.length}</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell style={{ background: "#f9fafb", fontWeight: "bold" }}>
+                Meta da vaquinha
+              </Table.Cell>
+              <Table.Cell textAlign="right">
+                {MoneyHelper.format(
+                  _.filter(form.friends, x => x.fun).length *
+                    parseFloat(withFun) +
+                    _.filter(form.friends, x => !x.fun).length *
+                      parseFloat(noFun)
+                )}
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell style={{ background: "#f9fafb", fontWeight: "bold" }}>
+                Valor atual da vaquinha
+              </Table.Cell>
+              <Table.Cell textAlign="right">
+                {MoneyHelper.format(
+                  _.sumBy(form.friends.filter(x => x.paid), x =>
+                    parseFloat(x.value)
+                  )
+                )}
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell style={{ background: "#f9fafb", fontWeight: "bold" }}>
+                Total de bebuns
+              </Table.Cell>
+              <Table.Cell textAlign="right">
+                {form.friends.filter(x => x.fun).length}
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell style={{ background: "#f9fafb", fontWeight: "bold" }}>
+                Total de saudáveis
+              </Table.Cell>
+              <Table.Cell textAlign="right">
+                {form.friends.filter(x => !x.fun).length}
+              </Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table>
+        <Button floated="left" onClick={() => previous()}>
+          Anterior
+        </Button>
+        <Button
+          primary={form.friends.length > 0}
+          disabled={form.friends.length === 0}
+          color={form.friends.length > 0 ? "blue" : "orange"}
+          floated="right"
+          onClick={() => next()}
+        >
+          {form.friends.length > 0 ? "Próximo" : "Forever alone não pode!"}
         </Button>
         <br style={{ clear: "both" }} />
       </Segment>
@@ -159,7 +271,10 @@ function Confirm() {
         <Modal.Header>Adicionar Amigos</Modal.Header>
         <Modal.Content>
           <Modal.Description>
-            <Segment>
+            <Segment
+              loading={loading}
+              className={selectedFriend.id ? "hidden" : ""}
+            >
               <Form>
                 <Form.Input
                   label="Nome"
@@ -176,6 +291,9 @@ function Confirm() {
               </Form>
               <List horizontal relaxed selection size="small">
                 {friendsList.map(item => {
+                  let icon = item.checked ? (
+                    <Icon name="smile outline" />
+                  ) : null;
                   return (
                     <List.Item key={item.id} onClick={() => selectFriend(item)}>
                       <Image avatar src={`${placeholderUrl}${item.name}`} />
@@ -184,7 +302,7 @@ function Confirm() {
                         <List.Description
                           style={{ textAlign: "center", color: "green" }}
                         >
-                          <Icon name="smile outline" />
+                          {icon}
                         </List.Description>
                       </List.Content>
                     </List.Item>
@@ -192,13 +310,23 @@ function Confirm() {
                 })}
               </List>
             </Segment>
-            <Segment className={selectedFriend.id === undefined ? "hidden" : ""}>
+            <Segment
+              className={selectedFriend.id === undefined ? "hidden" : ""}
+              style={{ marginTop: "0px" }}
+            >
               <Header>Contribução</Header>
-              <FriendForm data={selectedFriend} />
+              <FriendForm
+                data={selectedFriend}
+                addFriendToParty={addFriendToParty}
+              />
             </Segment>
           </Modal.Description>
           <Modal.Actions style={{ textAlign: "center", marginTop: "10px" }}>
-            <Button primary onClick={() => toggleModal()}>
+            <Button
+              className={selectedFriend.id ? "hidden" : ""}
+              primary
+              onClick={() => toggleModal()}
+            >
               Pronto!
             </Button>
           </Modal.Actions>
@@ -206,6 +334,6 @@ function Confirm() {
       </Modal>
     </Segment>
   );
-}
+};
 
-export default withRouter(Confirm);
+export default withRouter(BarbecueConfirm);

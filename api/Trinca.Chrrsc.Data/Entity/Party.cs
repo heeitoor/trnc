@@ -31,6 +31,11 @@ namespace Trinca.Chrrsc.Data.Entity
         [Required]
         public bool Fun { get; set; }
 
+        [Column("description")]
+        [Required]
+        [MaxLength(100)]
+        public string Description { get; set; }
+
         public virtual Friend Friend { get; set; }
 
         public virtual Barbecue Barbecue { get; set; }

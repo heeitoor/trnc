@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Trinca.Chrrsc.Contract\Trinca.Chrrsc.Contract.csproj" />
+    <ProjectReference Include="..\Trinca.Chrrsc.Data\Trinca.Chrrsc.Data.csproj" />
   </ItemGroup>
 
 </Project>

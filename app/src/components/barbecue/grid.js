@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table, Icon, Message } from "semantic-ui-react";
+import { Segment, Button, Table, Icon, Message } from "semantic-ui-react";
 import { withRouter } from "react-router-dom";
 import BarbecueService from "../../services/barbecue";
+import SettingsService from "../../services/settings";
+import LocalStorageHelper from "../../helpers/localStorage";
+const moment = require("moment");
 
 const Grid = props => {
   let listInitialState = [];
@@ -12,8 +15,10 @@ const Grid = props => {
   }
 
   const service = new BarbecueService();
+  const settingsService = new SettingsService();
   const [list, setList] = useState(listInitialState);
   const [hasPending, setHasPending] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const add = (editPending = false) => {
     localStorage.setItem(
@@ -22,12 +27,13 @@ const Grid = props => {
         ? wip
         : JSON.stringify({
             id: undefined,
-            why: 'fake',
-            when: '2019-09-26',
-            description: 'fake',
+            why: "fake",
+            when: "2019-09-26",
+            description: "fake",
             friends: []
           })
     );
+
     props.history.push("/barbecue/form");
   };
 
@@ -38,8 +44,19 @@ const Grid = props => {
   };
 
   const load = async () => {
-    const data = await service.get();
+    const [data, settings] = await Promise.all([
+      service.get(),
+      settingsService.get()
+    ]);
+
+    if (data.Ok !== undefined && !data.Ok) {
+      setHasError(false);
+    }
+
     setList([...list, ...data]);
+
+    LocalStorageHelper.setSettings(settingsService.format(settings.data));
+
     if (list.length > 0) {
       setHasPending(true);
     }
@@ -49,9 +66,7 @@ const Grid = props => {
     load();
   }, []);
 
-  useEffect(() => {
-    console.log("haspending");
-  }, [hasPending]);
+  useEffect(() => {}, [hasPending]);
 
   let pendingMessage = (
     <Message warning size="small">
@@ -63,7 +78,7 @@ const Grid = props => {
   );
 
   return (
-    <>
+    <Segment basic>
       {hasPending ? pendingMessage : null}
       <Table>
         <Table.Header>
@@ -77,8 +92,10 @@ const Grid = props => {
         </Table.Header>
         <Table.Body>
           {list.map(item => (
-            <Table.Row key={item.id} warning={!item.id}>
-              <Table.Cell>{item.when}</Table.Cell>
+            <Table.Row key={item.id ? item.id : 0} warning={!item.id}>
+              <Table.Cell>
+                {moment(item.when, "Y-MM-D").format("D/MM/Y")}
+              </Table.Cell>
               <Table.Cell>{item.why}</Table.Cell>
               <Table.Cell>{item.friendsCount}</Table.Cell>
               <Table.Cell>{item.amount}</Table.Cell>
@@ -91,6 +108,19 @@ const Grid = props => {
               </Table.Cell>
             </Table.Row>
           ))}
+          {list.length === 0 ? (
+            <Table.Row>
+              <Table.Cell
+                textAlign="center"
+                colSpan={5}
+                style={{ height: "100px" }}
+              >
+                <Icon name="meh outline" />
+                <br />
+                Nada aqui...
+              </Table.Cell>
+            </Table.Row>
+          ) : null}
         </Table.Body>
       </Table>
       {hasPending ? (
@@ -104,7 +134,7 @@ const Grid = props => {
           Adicionar
         </Button>
       )}
-    </>
+    </Segment>
   );
 };
 

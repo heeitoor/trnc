@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Trinca.Chrrsc.Contract.Model.Interface;
 
-namespace Trinca.Chrrsc.WebAPI.Model
+namespace Trinca.Chrrsc.Contract.Model
 {
-    public class BarbecueGridItem
+    public class BarbecueModel : IBarbecue
     {
         public int Id { get; set; }
 
@@ -13,6 +11,11 @@ namespace Trinca.Chrrsc.WebAPI.Model
 
         public DateTime When { get; set; }
 
+        public string Description { get; set; }
+    }
+
+    public class BarbecueGridItem : BarbecueModel
+    {
         public decimal Amount { get; set; }
 
         public int FriendsCount { get; set; }
