@@ -7,14 +7,9 @@ using Trinca.Chrrsc.Data.Entity;
 
 namespace Trinca.Chrrsc.Core.Business
 {
-    public class PartyBusiness : IPartyBusiness
+    public class PartyBusiness : BusinessBase, IPartyBusiness
     {
-        private readonly ChrrscContext context;
-
-        public PartyBusiness(ChrrscContext context)
-        {
-            this.context = context;
-        }
+        public PartyBusiness(ChrrscContext context) : base(context) { }
 
         public BusinessResult Save(PartyModel model)
         {
@@ -26,11 +21,11 @@ namespace Trinca.Chrrsc.Core.Business
                 Description = model.Barbecue.Description
             };
 
-            context.Add(barbecueEntity);
+            Context.Add(barbecueEntity);
 
             foreach (IContribution contribution in model.Contributions)
             {
-                context.Add(new Party
+                Context.Add(new Party
                 {
                     BarbecueId = barbecueEntity.Id,
                     FriendId = contribution.FriendId,
@@ -41,7 +36,7 @@ namespace Trinca.Chrrsc.Core.Business
                 });
             }
 
-            context.SaveChanges();
+            Context.SaveChanges();
 
             return new BusinessResult
             {

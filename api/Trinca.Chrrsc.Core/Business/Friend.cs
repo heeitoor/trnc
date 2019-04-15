@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 using Trinca.Chrrsc.Contract;
 using Trinca.Chrrsc.Contract.Business;
 using Trinca.Chrrsc.Contract.Model;
@@ -10,18 +8,13 @@ using Trinca.Chrrsc.Data.Entity;
 
 namespace Trinca.Chrrsc.Core.Business
 {
-    public class FriendBusiness : IFriendBusiness
+    public class FriendBusiness : BusinessBase, IFriendBusiness
     {
-        private readonly ChrrscContext context;
-
-        public FriendBusiness(ChrrscContext context)
-        {
-            this.context = context;
-        }
+        public FriendBusiness(ChrrscContext context) : base(context) { }
 
         public IEnumerable<FriendModel> Get()
         {
-            return context.Friend.Select(x => new FriendModel
+            return Context.Friend.Select(x => new FriendModel
             {
                 Id = x.Id,
                 Name = x.Name
@@ -35,9 +28,9 @@ namespace Trinca.Chrrsc.Core.Business
                 Name = model.Name
             };
 
-            context.Friend.Add(entity);
+            Context.Friend.Add(entity);
 
-            context.SaveChanges();
+            Context.SaveChanges();
 
             return new BusinessResult<int>
             {

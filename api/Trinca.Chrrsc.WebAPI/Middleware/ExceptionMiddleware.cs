@@ -1,23 +1,33 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Trinca.Chrrsc.Contract;
 
 namespace Trinca.Chrrsc.WebAPI.Middleware
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="next"></param>
         public ExceptionMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="httpContext"></param>
+        /// <returns></returns>
         public async Task InvokeAsync(HttpContext httpContext)
         {
             try
@@ -38,8 +48,7 @@ namespace Trinca.Chrrsc.WebAPI.Middleware
             return context.Response.WriteAsync(JsonConvert.SerializeObject(new ErrorResult
             {
                 Ok = false,
-                Message = "Erro na aplicação."
-                ,
+                Message = "Erro na aplicação.",
                 Details = exception.StackTrace
             }));
         }

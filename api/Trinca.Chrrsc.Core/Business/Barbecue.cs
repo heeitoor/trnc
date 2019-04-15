@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Trinca.Chrrsc.Contract.Business;
 using Trinca.Chrrsc.Contract.Model;
@@ -7,18 +6,13 @@ using Trinca.Chrrsc.Data.Context;
 
 namespace Trinca.Chrrsc.Core.Business
 {
-    public class BarbecueBusiness : IBarbecueBusiness
+    public class BarbecueBusiness : BusinessBase, IBarbecueBusiness
     {
-        private readonly ChrrscContext context;
-
-        public BarbecueBusiness(ChrrscContext context)
-        {
-            this.context = context;
-        }
+        public BarbecueBusiness(ChrrscContext context) : base(context) { }
 
         public IEnumerable<BarbecueModel> Get()
         {
-            return context.Barbecue.Select(x => new BarbecueGridItem
+            return Context.Barbecue.Select(x => new BarbecueGridItem
             {
                 Id = x.Id,
                 Why = x.Why,

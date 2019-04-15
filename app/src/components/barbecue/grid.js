@@ -27,9 +27,9 @@ const Grid = props => {
         ? wip
         : JSON.stringify({
             id: undefined,
-            why: "fake",
-            when: "2019-09-26",
-            description: "fake",
+            why: "",
+            when: "",
+            description: "",
             friends: []
           })
     );

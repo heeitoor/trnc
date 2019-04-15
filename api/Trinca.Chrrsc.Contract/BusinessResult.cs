@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Trinca.Chrrsc.Contract
+﻿namespace Trinca.Chrrsc.Contract
 {
     public abstract class ResultBase
     {

@@ -80,5 +80,70 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:Trinca.Chrrsc.WebAPI.Middleware.ExceptionMiddleware">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Middleware.ExceptionMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate)">
+            <summary>
+            
+            </summary>
+            <param name="next"></param>
+        </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Middleware.ExceptionMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            
+            </summary>
+            <param name="httpContext"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Trinca.Chrrsc.WebAPI.Program">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Program.Main(System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Program.CreateWebHostBuilder(System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Trinca.Chrrsc.WebAPI.Startup">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Trinca.Chrrsc.WebAPI.Startup.Configuration">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Startup.#ctor(Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            <summary>
+            
+            </summary>
+            <param name="env"></param>
+        </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:Trinca.Chrrsc.WebAPI.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            <summary>
+            
+            </summary>
+            <param name="app"></param>
+            <param name="env"></param>
+        </member>
     </members>
 </doc>
